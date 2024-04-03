@@ -154,3 +154,30 @@ h4 {
   justify-content: center;
   margin-bottom: 50px;
 }
+
+.left,
+.right {
+  position: fixed;
+  top: 46%;
+  z-index: 5;
+  cursor: pointer;
+  transition: transform 0.2s ease-in-out;
+}
+
+.left {
+  left: 30%;
+}
+
+.right {
+  right: 30%;
+}
+
+.left:hover,
+.right:hover {
+  transform: scale(1.1);
+}
+
+.left:active,
+.right:active {
+  transform: scale(0.9);
+}

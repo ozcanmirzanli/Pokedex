@@ -17,11 +17,14 @@ let pokedexMini = document.getElementById("pokedex-mini");
 let pokedexBackground = document.getElementById("pokedex-background");
 
 let displayedPokemonNames = [];
+let currentPokemonId = 1;
 
 async function loadPokemon(pokemonName) {
   let url = `https://pokeapi.co/api/v2/pokemon/${pokemonName}`;
   let response = await fetch(url);
   let currentPokemon = await response.json();
+
+  currentDisplayedPokemon(currentPokemon);
 
   renderPokedex(
     currentPokemon.name,
@@ -76,6 +79,7 @@ function renderPokedex(name, image, types) {
   let typesHtml = displayTypes(types, name);
 
   pokedexContainer.innerHTML += generatePokedexHTML(pokedexId, displayedName, typesHtml, pokeChartId, image, name);
+pokedexContainer.innerHTML += generateNextPokemonHTML()
 
   stylePokedex(pokedexId, types, typeColorMap);
 }
@@ -94,6 +98,15 @@ function generatePokedexHTML(pokedexId, displayedName, typesHtml, pokeChartId, i
 </div>
 </div>
 `;
+}
+
+function generateNextPokemonHTML() {
+  return /*html*/ `
+<div class="next-previous-buttons">
+<img onclick="previousPokemon(event)"  class="left" src="img/left.png" alt="left" />
+<img onclick="nextPokemon(event)" class="right"  src="img/right.png" alt="right" />
+  </div>
+  `;
 }
 
 // prettier-ignore
@@ -135,6 +148,37 @@ function closeStats() {
   document.body.style.overflow = "auto";
 }
 
+function setupBackgroundClose() {
+  pokedexBackground.addEventListener("click", function (event) {
+    // Only close if the click occurred directly on the background, not its children
+    if (event.target === pokedexBackground) {
+      closeStats();
+    }
+  });
+}
+
+function currentDisplayedPokemon(currentPokemon) {
+  if (currentPokemonId !== currentPokemon.id) {
+    currentPokemonId = currentPokemon.id;
+  }
+}
+
+function nextPokemon(event) {
+  if (event) event.stopPropagation();
+
+  currentPokemonId =
+    currentPokemonId >= loadedPokemonCount ? 1 : currentPokemonId + 1;
+  loadPokemon(currentPokemonId);
+}
+
+function previousPokemon(event) {
+  if (event) event.stopPropagation();
+
+  currentPokemonId =
+    currentPokemonId <= 1 ? loadedPokemonCount : currentPokemonId - 1;
+  loadPokemon(currentPokemonId);
+}
+
 function stylePokedex(pokedexId, types, typeColorMap) {
   let pokedex = document.getElementById(pokedexId);
 
@@ -154,3 +198,4 @@ function stylePokedexMini(miniContainerId, types, typeColorMap) {
 }
 
 loadMultiplePokemon();
+setupBackgroundClose();
