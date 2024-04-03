@@ -1,4 +1,13 @@
+let charts = {};
+
 async function renderChart(labels, dataPoints, pokeChartId) {
+  // If a chart for this Pokémon already exists, destroy it
+
+  if (charts[pokeChartId]) {
+    charts[pokeChartId].destroy();
+    // Delete the chart instance from the object after destruction
+    delete charts[pokeChartId];
+  }
   const data = {
     labels: labels,
     datasets: [
@@ -42,5 +51,5 @@ async function renderChart(labels, dataPoints, pokeChartId) {
     },
   };
 
-  new Chart(document.getElementById(pokeChartId), config);
+  charts[pokeChartId] = new Chart(document.getElementById(pokeChartId), config);
 }

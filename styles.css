@@ -18,7 +18,7 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  height: 78vh;
+  max-height: 78vh;
   min-width: 300px;
   background-color: #fb6c6c;
   color: white;
@@ -77,9 +77,8 @@ body {
 }
 
 .pokedex-mini-container {
-  width: 250px;
-  min-width: 200px;
-  height: 150px;
+  min-width: 250px;
+  min-height: 150px;
   margin: 15px;
   display: flex;
   justify-content: center;
@@ -158,18 +157,18 @@ h4 {
 .left,
 .right {
   position: fixed;
-  top: 46%;
+  top: 42%;
   z-index: 5;
   cursor: pointer;
   transition: transform 0.2s ease-in-out;
 }
 
 .left {
-  left: 30%;
+  left: calc(30vw - 50px);
 }
 
 .right {
-  right: 30%;
+  right: calc(30vw - 50px);
 }
 
 .left:hover,
@@ -180,4 +179,106 @@ h4 {
 .left:active,
 .right:active {
   transform: scale(0.9);
+}
+
+@media (max-width: 1200px) {
+  .left {
+    left: calc(20vw - 50px);
+  }
+
+  .right {
+    right: calc(20vw - 50px);
+  }
+}
+
+@media (max-width: 800px) {
+  .left {
+    left: calc(15vw - 50px);
+  }
+
+  .right {
+    right: calc(15vw - 50px);
+  }
+}
+
+@media (max-width: 780px) {
+  #pokedex-mini {
+    margin: 30px 50px 30px 50px;
+  }
+}
+
+@media (max-width: 680px) {
+  #pokedex-mini {
+    margin: 20px 30px 20px 30px;
+  }
+
+  .pokemon-logo img {
+    width: 350px;
+  }
+
+  .left {
+    left: calc(33vw - 50px);
+  }
+
+  .right {
+    right: calc(33vw - 50px);
+  }
+}
+
+@media (max-width: 540px) {
+  .left {
+    left: calc(28vw - 50px);
+  }
+
+  .right {
+    right: calc(28vw - 50px);
+  }
+}
+
+@media (max-width: 440px) {
+  .left {
+    left: calc(23vw - 50px);
+  }
+
+  .right {
+    right: calc(23vw - 50px);
+  }
+}
+
+@media (max-width: 400px) {
+  .pokedex {
+    width: 224px;
+  }
+
+  .info-container {
+    width: 200px;
+  }
+
+  .left {
+    left: calc(25vw - 50px);
+  }
+
+  .right {
+    right: calc(25vw - 50px);
+  }
+
+  .info-container {
+    padding-top: 10px;
+
+    padding-bottom: 10px;
+  }
+}
+
+@media (max-width: 380px) {
+  .pokemon-logo img {
+    width: 300px;
+  }
+
+  .left {
+    left: calc(22vw - 50px);
+  }
+
+  .right {
+    right: calc(22vw - 50px);
+  }
 }
