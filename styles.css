@@ -303,10 +303,12 @@ input:focus {
 
   .left {
     left: calc(25vw - 50px);
+    width: 60px;
   }
 
   .right {
     right: calc(25vw - 50px);
+    width: 60px;
   }
 
   .info-container {
