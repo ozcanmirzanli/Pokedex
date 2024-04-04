@@ -12,6 +12,7 @@ body {
 
 .pokemon-logo img {
   width: 400px;
+  min-width: 300px;
 }
 
 .pokedex {
@@ -23,7 +24,6 @@ body {
   background-color: #fb6c6c;
   color: white;
   border-radius: 20px;
-  margin-top: 11vh;
   overflow: hidden;
 }
 
@@ -66,12 +66,15 @@ body {
   position: fixed;
   top: 0;
   left: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 #pokedex-mini {
   display: flex;
   flex-wrap: wrap;
-  margin: 50px 100px 50px 100px;
+  margin: 35px 100px 50px 100px;
   justify-content: center;
   align-items: center;
 }
@@ -99,6 +102,11 @@ body {
   width: 100px;
   height: 100px;
   margin-right: -17px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.pokedex-mini-container img:hover {
+  transform: scale(2.05);
 }
 
 .pokemon-type {
@@ -125,11 +133,10 @@ h4 {
   margin-right: 20px;
 }
 
-/* Base button styling */
 .loadMorePokemon {
   padding: 10px 20px;
   border: none;
-  background-color: #ff3d3d; /* Poké Ball red */
+  background-color: #ff3d3d;
   color: white;
   text-transform: uppercase;
   font-weight: bold;
@@ -157,7 +164,7 @@ h4 {
 .left,
 .right {
   position: fixed;
-  top: 42%;
+  top: 44%;
   z-index: 5;
   cursor: pointer;
   transition: transform 0.2s ease-in-out;
@@ -179,6 +186,49 @@ h4 {
 .left:active,
 .right:active {
   transform: scale(0.9);
+}
+
+.pokemon-number {
+  height: 0px;
+  margin-left: 79%;
+  margin-top: -2%;
+}
+
+.close-btn {
+  height: 0px;
+  margin-right: 79%;
+  margin-top: 4%;
+  cursor: pointer;
+}
+
+.search-input {
+  margin-top: 40px;
+  display: flex;
+  justify-content: center;
+}
+
+input {
+  width: 450px;
+  height: 40px;
+  border: none;
+  background-color: rgb(255, 255, 255);
+  border-radius: 50px;
+  outline: none;
+  padding-left: 30px;
+  padding-right: 30px;
+}
+
+input:focus {
+  border: 1px solid lightgray;
+}
+
+.search-not-found h2 {
+  text-align: center;
+}
+
+.search-not-found img {
+  max-width: 100%;
+  min-width: 80%;
 }
 
 @media (max-width: 1200px) {
@@ -210,10 +260,6 @@ h4 {
 @media (max-width: 680px) {
   #pokedex-mini {
     margin: 20px 30px 20px 30px;
-  }
-
-  .pokemon-logo img {
-    width: 350px;
   }
 
   .left {
@@ -270,10 +316,6 @@ h4 {
 }
 
 @media (max-width: 380px) {
-  .pokemon-logo img {
-    width: 300px;
-  }
-
   .left {
     left: calc(22vw - 50px);
   }

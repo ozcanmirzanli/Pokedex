@@ -15,9 +15,10 @@ const typeColorMap = {
 let pokedexContainer = document.getElementById("pokedex-container");
 let pokedexMini = document.getElementById("pokedex-mini");
 let pokedexBackground = document.getElementById("pokedex-background");
+let loadMorePokemonBtn = document.getElementById("loadMorePokemon");
 
 let displayedPokemonNames = [];
-let currentPokemonId = 1;
+let currentPokemonNum = 1;
 
 async function loadPokemon(pokemonName) {
   let url = `https://pokeapi.co/api/v2/pokemon/${pokemonName}`;
@@ -26,10 +27,12 @@ async function loadPokemon(pokemonName) {
 
   currentDisplayedPokemon(currentPokemon);
 
+  const types = getPokemonTypes(currentPokemon.types);
+
   renderPokedex(
-    currentPokemon.name,
-    currentPokemon.sprites.other["official-artwork"].front_default,
-    currentPokemon.types.map((type) => type.type.name)
+    currentPokemon["name"],
+    currentPokemon["sprites"]["other"]["official-artwork"]["front_default"],
+    types
   );
   renderPokemonInfo(currentPokemon);
 
@@ -40,7 +43,8 @@ function renderPokemonInfo(currentPokemon) {
   let name = currentPokemon["name"];
   let image =
     currentPokemon["sprites"]["other"]["official-artwork"]["front_default"];
-  let types = currentPokemon.types.map((type) => type.type.name);
+  const types = getPokemonTypes(currentPokemon.types);
+
   let displayedName = displayName(name);
   let typesHtml = displayTypes(types, name);
 
@@ -50,8 +54,12 @@ function renderPokemonInfo(currentPokemon) {
 
 function pokemonChartInfo(currentPokemon) {
   const name = currentPokemon["name"];
-  const labels = currentPokemon.stats.map((stat) => stat.stat.name);
-  const dataPoints = currentPokemon.stats.map((stat) => stat.base_stat);
+  let labels = [];
+  let dataPoints = [];
+  for (let i = 0; i < currentPokemon.stats.length; i++) {
+    labels.push(currentPokemon.stats[i].stat.name);
+    dataPoints.push(currentPokemon.stats[i].base_stat);
+  }
   const pokeChartId = `poke-chart-${name}`;
 
   renderChart(labels, dataPoints, pokeChartId);
@@ -62,12 +70,21 @@ function displayName(name) {
   return `${displayedName}`;
 }
 
+function getPokemonTypes(typesArray) {
+  let types = [];
+  for (let i = 0; i < typesArray.length; i++) {
+    types.push(typesArray[i].type.name);
+  }
+  return types;
+}
+
 // prettier-ignore
 function displayTypes(types, name) {
-  let typesHtml = types.map((type) =>
-  `<h4 class="pokemon-type" id="pokemon-type-${name}">${type}</h4>`
-    ).join("");
-  return `${typesHtml}`;
+  let typesHtml = "";
+  for (let i = 0; i < types.length; i++) {
+    typesHtml += `<h4 class="pokemon-type" id="pokemon-type-${name}">${types[i]}</h4>`;
+  }
+  return typesHtml;
 }
 
 // prettier-ignore
@@ -78,18 +95,16 @@ function renderPokedex(name, image, types) {
   let displayedName = displayName(name);
   let typesHtml = displayTypes(types, name);
 
-  pokedexContainer.innerHTML += generatePokedexHTML(pokedexId, displayedName, typesHtml, pokeChartId, image, name);
+pokedexContainer.innerHTML += generatePokedexDataHTML(pokedexId, displayedName, typesHtml, pokeChartId, image, name);
 pokedexContainer.innerHTML += generateNextPokemonHTML()
 
-  stylePokedex(pokedexId, types, typeColorMap);
+applyBackgroundColor(pokedexId, types, typeColorMap)    
 }
 
 // prettier-ignore
-function generatePokedexHTML(pokedexId, displayedName, typesHtml, pokeChartId, image,name) {
+function generatePokedexDataHTML(pokedexId, displayedName, typesHtml, pokeChartId, image, name) {
   return /*html*/ `
-  <div class="pokedex" id="${pokedexId}">
-  <div class="pokedex-text">
-  <h2 id="pokemon-name-${name}">${displayedName}</h2>
+ ${generatePokedexInfoHTML(name, pokedexId, displayedName) }
   ${typesHtml}
   </div>
     <img id="pokemon-image-${name}" class="pokemon-image" src=${image} />
@@ -98,6 +113,19 @@ function generatePokedexHTML(pokedexId, displayedName, typesHtml, pokeChartId, i
 </div>
 </div>
 `;
+}
+
+function generatePokedexInfoHTML(name, pokedexId, displayedName) {
+  return /*html*/ `
+  <div class="pokedex" id="${pokedexId}" onclick="stopPropagation(event)">
+  <div class="close-btn"><img src="img/close.png" alt="close" onclick="closeStats()">
+  </div>
+  <div class="pokemon-number">
+  <p>#${currentPokemonNum}</p>
+  </div>
+  <div class="pokedex-text">
+  <h2 id="pokemon-name-${name}">${displayedName}</h2>
+  `;
 }
 
 function generateNextPokemonHTML() {
@@ -113,20 +141,18 @@ function generateNextPokemonHTML() {
 function renderPokedexMini(name, image, types, displayedName, typesHtml) {
   // Check if the Pokémon name is not in the list of displayed Pokémon
   if (!displayedPokemonNames.includes(name)) {
-    let miniContainerId = `pokedex-mini-container-${name}`;
-    pokedexMini.innerHTML += generatePokedexMiniHTML(miniContainerId, name, displayedName, typesHtml, image);
-    stylePokedexMini(miniContainerId, types, typeColorMap);
-    
-    // Add the Pokémon name to the list
+    let pokedexId = `pokedex-mini-container-${name}`;
+    pokedexMini.innerHTML += generatePokedexMiniHTML(pokedexId, name, displayedName, typesHtml, image);
+    applyBackgroundColor(pokedexId, types, typeColorMap)    
     displayedPokemonNames.push(name);
   }
 }
 
 // prettier-ignore
-function generatePokedexMiniHTML (miniContainerId,name, displayedName, typesHtml, image) {
+function generatePokedexMiniHTML (pokedexId, name, displayedName, typesHtml, image) {
 
   return /*html*/ `
-  <div class="pokedex-mini-container" id="${miniContainerId}" onclick="openStats('${name}')">
+  <div class="pokedex-mini-container" id="${pokedexId}" onclick="openStats('${name}')">
   <div class="pokedex-text-mini">
   <h3 id="pokemon-name-${name}">${displayedName}</h3>
   ${typesHtml}
@@ -136,66 +162,60 @@ function generatePokedexMiniHTML (miniContainerId,name, displayedName, typesHtml
 }
 
 async function openStats(name) {
-  pokedexBackground.style.display = "block";
+  pokedexBackground.style.display = "flex";
   document.body.style.overflow = "hidden";
 
-  const pokemon = await loadPokemon(name);
+  // Ensure this fetches and displays the correct Pokémon based on 'name'
+  let pokemon = await loadPokemon(name);
   renderPokemonInfo(pokemon);
 }
 
 function closeStats() {
-  pokedexBackground.style.display = "none";
-  document.body.style.overflow = "auto";
-}
-
-function setupBackgroundClose() {
-  pokedexBackground.addEventListener("click", function (event) {
-    // Only close if the click occurred directly on the background, not its children
-    if (event.target === pokedexBackground) {
-      closeStats();
-    }
-  });
+  if (pokedexBackground) {
+    pokedexBackground.style.display = "none";
+    document.body.style.overflow = "auto";
+  }
 }
 
 function currentDisplayedPokemon(currentPokemon) {
-  if (currentPokemonId !== currentPokemon.id) {
-    currentPokemonId = currentPokemon.id;
+  if (currentPokemonNum !== currentPokemon.id) {
+    currentPokemonNum = currentPokemon.id;
   }
 }
 
 function nextPokemon(event) {
-  if (event) event.stopPropagation();
+  stopPropagation(event);
 
-  currentPokemonId =
-    currentPokemonId >= loadedPokemonCount ? 1 : currentPokemonId + 1;
-  loadPokemon(currentPokemonId);
+  currentPokemonNum =
+    currentPokemonNum >= loadedPokemonCount ? 1 : currentPokemonNum + 1;
+  loadPokemon(currentPokemonNum);
 }
 
 function previousPokemon(event) {
+  stopPropagation(event);
+
+  currentPokemonNum =
+    currentPokemonNum <= 1 ? loadedPokemonCount : currentPokemonNum - 1;
+  loadPokemon(currentPokemonNum);
+}
+
+function stopPropagation(event) {
   if (event) event.stopPropagation();
-
-  currentPokemonId =
-    currentPokemonId <= 1 ? loadedPokemonCount : currentPokemonId - 1;
-  loadPokemon(currentPokemonId);
 }
 
-function stylePokedex(pokedexId, types, typeColorMap) {
+function applyBackgroundColor(pokedexId, types, typeColorMap) {
   let pokedex = document.getElementById(pokedexId);
-
   if (pokedex) {
-    const typeFound = types.find((type) => typeColorMap[type]);
-    pokedex.style.backgroundColor = typeColorMap[typeFound];
+    let typeFound = "";
+    for (let i = 0; i < types.length; i++) {
+      if (typeColorMap[types[i]]) {
+        typeFound = types[i];
+        break;
+      }
+    }
+    pokedex.style.backgroundColor = typeColorMap[typeFound] || "#ffffff";
   }
 }
 
-function stylePokedexMini(miniContainerId, types, typeColorMap) {
-  let pokedexMini = document.getElementById(miniContainerId);
-
-  if (pokedexMini) {
-    const typeFound = types.find((type) => typeColorMap[type]);
-    pokedexMini.style.backgroundColor = typeColorMap[typeFound];
-  }
-}
-
+searchPokemon();
 loadMultiplePokemon();
-setupBackgroundClose();
