@@ -14,7 +14,7 @@ function resetDisplayOnEmptySearch() {
   for (let i = 0; i < displayedPokemonNames.length; i++) {
     displayPokemon(displayedPokemonNames[i]);
   }
-  loadMorePokemonBtn.style.display = "block";
+  showLoadBtn();
 }
 
 function searchAndDisplayPokemon(searchInput) {
@@ -54,10 +54,10 @@ function hidePokemon(name) {
 function clearAndShowElements(found) {
   if (!found) {
     showNotFoundMessage();
-    loadMorePokemonBtn.style.display = "none";
+    hideLoadBtn();
   } else {
     clearNotFoundMessage();
-    loadMorePokemonBtn.style.display = "none";
+    hideLoadBtn();
   }
 }
 

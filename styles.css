@@ -8,6 +8,7 @@ body {
   display: flex;
   justify-content: center;
   margin-top: 2vh;
+  cursor: pointer;
 }
 
 .pokemon-logo img {
@@ -229,6 +230,43 @@ input:focus {
 .search-not-found img {
   max-width: 100%;
   min-width: 80%;
+}
+
+.loader {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #9999996b;
+  transition: opacity 0.75s, visibility 0.75s;
+}
+
+.loader::after {
+  content: "";
+  width: 75px;
+  height: 75px;
+  border: 15px solid #2c6bb4;
+  border-top-color: #ffcc01;
+  border-radius: 50%;
+  animation: loading 0.75s ease infinite;
+}
+
+@keyframes loading {
+  from {
+    transform: rotate(0turn);
+  }
+  to {
+    transform: rotate(1turn);
+  }
+}
+
+.d-none {
+  opacity: 0;
+  visibility: hidden;
 }
 
 @media (max-width: 1200px) {

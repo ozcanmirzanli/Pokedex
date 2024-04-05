@@ -1,8 +1,10 @@
 async function loadMultiplePokemon() {
+  showLoader();
   const initialLoad = 18; // How many Pokémon to loads initially
   const offset = 0; // Start from the first Pokémon in the list
   await loadPokemonBatch(initialLoad, offset);
   loadedPokemonCount = initialLoad;
+  showLoadBtn();
 }
 
 async function loadPokemonBatch(initialLoad, offset) {
@@ -18,6 +20,7 @@ async function loadPokemonBatch(initialLoad, offset) {
 let loadedPokemonCount = 0;
 
 async function loadMorePokemon() {
+  showLoader();
   const initialLoad = 18; // How many more Pokémon to load each time this function is called
   await loadPokemonBatch(initialLoad, loadedPokemonCount);
   loadedPokemonCount += initialLoad; // Update the count of loaded Pokémon
@@ -26,6 +29,7 @@ async function loadMorePokemon() {
 
   // Hide the load more button if all Pokémon have been loaded
   if (loadedPokemonCount >= totalPokemon) {
-    loadMorePokemonBtn.style.display = "none";
+    hideLoadBtn();
   }
+  showLoadBtn();
 }

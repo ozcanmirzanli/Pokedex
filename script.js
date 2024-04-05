@@ -20,23 +20,23 @@ let loadMorePokemonBtn = document.getElementById("loadMorePokemon");
 let displayedPokemonNames = [];
 let currentPokemonNum = 1;
 
+// prettier-ignore
 async function loadPokemon(pokemonName) {
+  showLoader();
   let url = `https://pokeapi.co/api/v2/pokemon/${pokemonName}`;
-  let response = await fetch(url);
-  let currentPokemon = await response.json();
+  try {
+    let response = await fetch(url);
+    let currentPokemon = await response.json();
 
-  currentDisplayedPokemon(currentPokemon);
-
-  const types = getPokemonTypes(currentPokemon.types);
-
-  renderPokedex(
-    currentPokemon["name"],
-    currentPokemon["sprites"]["other"]["official-artwork"]["front_default"],
-    types
-  );
-  renderPokemonInfo(currentPokemon);
-
-  return currentPokemon;
+    currentDisplayedPokemon(currentPokemon);
+    const types = getPokemonTypes(currentPokemon.types);
+    renderPokedex(currentPokemon["name"], currentPokemon["sprites"]["other"]["official-artwork"]["front_default"], types);
+    renderPokemonInfo(currentPokemon);
+    hideLoadBtn();
+    return currentPokemon;
+  } finally {
+    hideLoader();
+  }
 }
 
 function renderPokemonInfo(currentPokemon) {
@@ -50,6 +50,7 @@ function renderPokemonInfo(currentPokemon) {
 
   renderPokedexMini(name, image, types, displayedName, typesHtml);
   pokemonChartInfo(currentPokemon);
+  showLoadBtn();
 }
 
 function pokemonChartInfo(currentPokemon) {
@@ -175,6 +176,7 @@ function closeStats() {
     pokedexBackground.style.display = "none";
     document.body.style.overflow = "auto";
   }
+  showLoadBtn();
 }
 
 function currentDisplayedPokemon(currentPokemon) {
@@ -215,6 +217,22 @@ function applyBackgroundColor(pokedexId, types, typeColorMap) {
     }
     pokedex.style.backgroundColor = typeColorMap[typeFound] || "#ffffff";
   }
+}
+
+function showLoader() {
+  document.getElementById("loader").style.display = "flex";
+}
+
+function hideLoader() {
+  document.getElementById("loader").style.display = "none";
+}
+
+function showLoadBtn() {
+  loadMorePokemonBtn.style.display = "flex";
+}
+
+function hideLoadBtn() {
+  loadMorePokemonBtn.style.display = "none";
 }
 
 searchPokemon();
