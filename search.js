@@ -74,15 +74,6 @@ function clearNotFoundMessage() {
   }
 }
 
-function generateDisplayNoPokemonFoundHTML() {
-  return `
-     <div class="search-not-found">
-      <h2> No pokemon found</h2>
-      <img src="img/search.png"> 
-      </div>
-      `;
-}
-
 function renderMiniPokedexEntry(pokemon) {
   let name = pokemon["name"];
   let image = pokemon["sprites"]["other"]["official-artwork"]["front_default"];

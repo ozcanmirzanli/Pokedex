@@ -10,6 +10,7 @@ async function loadMultiplePokemon() {
 async function loadPokemonBatch(initialLoad, offset) {
   const url = `https://pokeapi.co/api/v2/pokemon?limit=${initialLoad}&offset=${offset}`;
   const response = await fetch(url);
+
   const data = await response.json();
 
   for (let i = 0; i < data.results.length; i++) {

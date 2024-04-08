@@ -16,41 +16,50 @@ let pokedexContainer = document.getElementById("pokedex-container");
 let pokedexMini = document.getElementById("pokedex-mini");
 let pokedexBackground = document.getElementById("pokedex-background");
 let loadMorePokemonBtn = document.getElementById("loadMorePokemon");
+let sectionsContainer = document.getElementById("sections-container");
+let chartContainer = document.getElementById("chart-container");
+let dataContainer = document.getElementById("data-container");
 
+let pokemonName = "bulbasaur";
+let currentPokemon = pokemonName;
 let displayedPokemonNames = [];
 let currentPokemonNum = 1;
 
 // prettier-ignore
 async function loadPokemon(pokemonName) {
   showLoader();
+
   let url = `https://pokeapi.co/api/v2/pokemon/${pokemonName}`;
   try {
     let response = await fetch(url);
-    let currentPokemon = await response.json();
-
+    currentPokemon = await response.json(); 
     currentDisplayedPokemon(currentPokemon);
+
     const types = getPokemonTypes(currentPokemon.types);
     renderPokedex(currentPokemon["name"], currentPokemon["sprites"]["other"]["official-artwork"]["front_default"], types);
     renderPokemonInfo(currentPokemon);
-    hideLoadBtn();
+
     return currentPokemon;
+
   } finally {
     hideLoader();
+    hideLoadBtn();
   }
 }
 
 function renderPokemonInfo(currentPokemon) {
-  let name = currentPokemon["name"];
+  let name = currentPokemon.name;
   let image =
     currentPokemon["sprites"]["other"]["official-artwork"]["front_default"];
-  const types = getPokemonTypes(currentPokemon.types);
-
+  let types = getPokemonTypes(currentPokemon.types);
   let displayedName = displayName(name);
   let typesHtml = displayTypes(types, name);
 
   renderPokedexMini(name, image, types, displayedName, typesHtml);
   pokemonChartInfo(currentPokemon);
   showLoadBtn();
+  showChart();
+  underlineSection();
 }
 
 function pokemonChartInfo(currentPokemon) {
@@ -64,28 +73,6 @@ function pokemonChartInfo(currentPokemon) {
   const pokeChartId = `poke-chart-${name}`;
 
   renderChart(labels, dataPoints, pokeChartId);
-}
-
-function displayName(name) {
-  let displayedName = name[0].toUpperCase() + name.slice(1);
-  return `${displayedName}`;
-}
-
-function getPokemonTypes(typesArray) {
-  let types = [];
-  for (let i = 0; i < typesArray.length; i++) {
-    types.push(typesArray[i].type.name);
-  }
-  return types;
-}
-
-// prettier-ignore
-function displayTypes(types, name) {
-  let typesHtml = "";
-  for (let i = 0; i < types.length; i++) {
-    typesHtml += `<h4 class="pokemon-type" id="pokemon-type-${name}">${types[i]}</h4>`;
-  }
-  return typesHtml;
 }
 
 // prettier-ignore
@@ -103,42 +90,6 @@ applyBackgroundColor(pokedexId, types, typeColorMap)
 }
 
 // prettier-ignore
-function generatePokedexDataHTML(pokedexId, displayedName, typesHtml, pokeChartId, image, name) {
-  return /*html*/ `
- ${generatePokedexInfoHTML(name, pokedexId, displayedName) }
-  ${typesHtml}
-  </div>
-    <img id="pokemon-image-${name}" class="pokemon-image" src=${image} />
-    <div class="info-container">
-  <canvas id="${pokeChartId}" width="350" height="300"></canvas>
-</div>
-</div>
-`;
-}
-
-function generatePokedexInfoHTML(name, pokedexId, displayedName) {
-  return /*html*/ `
-  <div class="pokedex" id="${pokedexId}" onclick="stopPropagation(event)">
-  <div class="close-btn"><img src="img/close.png" alt="close" onclick="closeStats()">
-  </div>
-  <div class="pokemon-number">
-  <p>#${currentPokemonNum}</p>
-  </div>
-  <div class="pokedex-text">
-  <h2 id="pokemon-name-${name}">${displayedName}</h2>
-  `;
-}
-
-function generateNextPokemonHTML() {
-  return /*html*/ `
-<div class="next-previous-buttons">
-<img onclick="previousPokemon(event)"  class="left" src="img/left.png" alt="left" />
-<img onclick="nextPokemon(event)" class="right"  src="img/right.png" alt="right" />
-  </div>
-  `;
-}
-
-// prettier-ignore
 function renderPokedexMini(name, image, types, displayedName, typesHtml) {
   // Check if the Pokémon name is not in the list of displayed Pokémon
   if (!displayedPokemonNames.includes(name)) {
@@ -149,25 +100,12 @@ function renderPokedexMini(name, image, types, displayedName, typesHtml) {
   }
 }
 
-// prettier-ignore
-function generatePokedexMiniHTML (pokedexId, name, displayedName, typesHtml, image) {
-
-  return /*html*/ `
-  <div class="pokedex-mini-container" id="${pokedexId}" onclick="openStats('${name}')">
-  <div class="pokedex-text-mini">
-  <h3 id="pokemon-name-${name}">${displayedName}</h3>
-  ${typesHtml}
-  </div>
-  <img src=${image} alt="pokemon-img" />
-  </div>`;
-}
-
-async function openStats(name) {
+async function openStats(pokemonName) {
   pokedexBackground.style.display = "flex";
   document.body.style.overflow = "hidden";
 
   // Ensure this fetches and displays the correct Pokémon based on 'name'
-  let pokemon = await loadPokemon(name);
+  let pokemon = await loadPokemon(pokemonName);
   renderPokemonInfo(pokemon);
 }
 
@@ -185,54 +123,18 @@ function currentDisplayedPokemon(currentPokemon) {
   }
 }
 
-function nextPokemon(event) {
+async function nextPokemon(event) {
   stopPropagation(event);
-
   currentPokemonNum =
     currentPokemonNum >= loadedPokemonCount ? 1 : currentPokemonNum + 1;
-  loadPokemon(currentPokemonNum);
+  await openStats(currentPokemonNum);
 }
 
-function previousPokemon(event) {
+async function previousPokemon(event) {
   stopPropagation(event);
-
   currentPokemonNum =
     currentPokemonNum <= 1 ? loadedPokemonCount : currentPokemonNum - 1;
-  loadPokemon(currentPokemonNum);
-}
-
-function stopPropagation(event) {
-  if (event) event.stopPropagation();
-}
-
-function applyBackgroundColor(pokedexId, types, typeColorMap) {
-  let pokedex = document.getElementById(pokedexId);
-  if (pokedex) {
-    let typeFound = "";
-    for (let i = 0; i < types.length; i++) {
-      if (typeColorMap[types[i]]) {
-        typeFound = types[i];
-        break;
-      }
-    }
-    pokedex.style.backgroundColor = typeColorMap[typeFound] || "#ffffff";
-  }
-}
-
-function showLoader() {
-  document.getElementById("loader").style.display = "flex";
-}
-
-function hideLoader() {
-  document.getElementById("loader").style.display = "none";
-}
-
-function showLoadBtn() {
-  loadMorePokemonBtn.style.display = "flex";
-}
-
-function hideLoadBtn() {
-  loadMorePokemonBtn.style.display = "none";
+  await openStats(currentPokemonNum);
 }
 
 searchPokemon();

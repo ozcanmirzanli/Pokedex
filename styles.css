@@ -43,8 +43,9 @@ body {
   background-color: white;
   border-top-left-radius: 40px;
   border-top-right-radius: 40px;
-  min-width: 300px;
-  padding: 20px 10px 40px 10px;
+  min-width: 370px;
+  min-height: 300px;
+  padding: 40px 10px 40px 10px;
   display: flex;
   justify-content: center;
   margin-top: 18px;
@@ -52,6 +53,11 @@ body {
 
 .pokemon-image {
   width: 200px;
+}
+
+#sections-container {
+  width: 350px;
+  height: 300px;
 }
 
 .pokedex-container {
@@ -132,6 +138,81 @@ h4 {
 
 .pokedex-text-mini {
   margin-right: 20px;
+}
+
+.about-section {
+  margin-top: 20px;
+  width: 300px;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  align-items: flex-start;
+}
+
+.about-section b {
+  margin-left: 40px;
+}
+
+.about-sections span {
+  margin-bottom: 10px;
+}
+
+.about-text {
+  display: flex;
+  justify-content: space-between;
+  color: #58abf6;
+}
+
+.moves-section {
+  display: flex;
+  width: 300px;
+  margin-top: 75px;
+  overflow: scroll;
+  height: 295px;
+}
+
+.moves-section b {
+  display: flex;
+  font-weight: normal;
+  gap: 10px;
+}
+
+.moves-section span {
+  font-weight: bold;
+  gap: 15px;
+  display: flex;
+  flex-direction: column;
+}
+
+.data-container {
+  height: 250px;
+  display: flex;
+  align-items: center;
+}
+
+.canvas {
+  max-width: 330px;
+  max-height: 275px;
+}
+
+.section-links {
+  position: absolute;
+  top: 53%;
+}
+
+.section-links button {
+  border: none;
+  background-color: white;
+  color: #58abf6;
+  margin-right: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.section-links button.active {
+  border-bottom: 2px solid #0389ff;
+  color: #0389ff;
 }
 
 .loadMorePokemon {
@@ -264,9 +345,52 @@ input:focus {
   }
 }
 
+span {
+  color: black;
+}
+
+b {
+  color: black;
+}
+
 .d-none {
   opacity: 0;
   visibility: hidden;
+}
+
+/* Scrollbar track (background) */
+::-webkit-scrollbar {
+  width: 16px; /* Adjust the width of the scrollbar */
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f0f0f0; /* Light grey, reminiscent of a Poké Ball's center */
+  border: 4px solid #ffffff; /* White border to mimic the Poké Ball design */
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(
+    135deg,
+    #ff0000 0%,
+    #ff0000 50%,
+    #ffffff 50%,
+    #ffffff 100%
+  ); /* Red and white for the iconic Poké Ball look */
+  border-radius: 8px; /* Slightly rounded corners for the scrollbar handle */
+  border: 2px solid #000000; /* Black border to add contrast and mimic the Poké Ball's lines */
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(
+    135deg,
+    #cc0000 0%,
+    #cc0000 50%,
+    #e0e0e0 50%,
+    #e0e0e0 100%
+  ); /* Darker red and a lighter grey on hover for interactivity */
 }
 
 @media (max-width: 1200px) {
@@ -341,7 +465,18 @@ input:focus {
   }
 
   .info-container {
-    width: 200px;
+    width: 285px;
+    min-width: 285px;
+    padding-top: 40px;
+    padding-bottom: 0px;
+  }
+
+  .about-section {
+    width: 224px;
+  }
+
+  .moves-section {
+    width: 224px;
   }
 
   .left {
@@ -352,12 +487,6 @@ input:focus {
   .right {
     right: calc(25vw - 50px);
     width: 60px;
-  }
-
-  .info-container {
-    padding-top: 10px;
-
-    padding-bottom: 10px;
   }
 }
 
