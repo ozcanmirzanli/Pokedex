@@ -49,10 +49,12 @@ function generateMovesHTML(moves, levels) {
 function generatePokedexInfoHTML(name, pokedexId, displayedName) {
   return /*html*/ `
     <div class="pokedex" id="${pokedexId}" onclick="stopPropagation(event)">
+    <div class="pokedex-top">
     <div class="close-btn"><img src="img/close.png" alt="close" onclick="closeStats()">
     </div>
     <div class="pokemon-number">
     <p>#${currentPokemonNum}</p>
+    </div>
     </div>
     <div class="pokedex-text">
     <h2 id="pokemon-name-${name}">${displayedName}</h2>
